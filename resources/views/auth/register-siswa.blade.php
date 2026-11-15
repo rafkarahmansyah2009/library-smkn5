@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Form Pendaftaran Siswa - Library SMKN 5</title>
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
+</head>
+<body class="bg-surface antialiased font-body-md text-on-background">
+    <main class="min-h-screen flex items-center justify-center p-8">
+        <div class="flex flex-col w-full h-full min-h-[calc(100vh-4rem)]">
+            <div class="flex-1 flex w-full max-w-container-max mx-auto bg-surface-container-lowest rounded-2xl shadow-xl overflow-hidden relative">
+                <!-- Left Panel -->
+                <div class="hidden lg:flex lg:w-1/2 relative flex-col justify-between p-12 overflow-hidden bg-primary-container text-on-primary-container">
+                    <!-- Background Image -->
+                    <div class="absolute inset-0 bg-cover bg-center z-0 mix-blend-overlay opacity-40" style="background-image: url('{{ asset('images/library/screen.png') }}');"></div>
+                    <!-- Scrim -->
+                    <div class="absolute inset-0 bg-gradient-to-t from-primary-container via-primary-container/80 to-transparent z-10"></div>
+
+                    <div class="relative z-20 flex flex-col items-start gap-4">
+                        <div class="flex items-center gap-3">
+                            <span class="material-symbols-outlined text-4xl text-tertiary-fixed" style="font-variation-settings: 'FILL' 1;">menu_book</span>
+                            <span class="font-display-lg text-display-lg text-on-primary">Library SMKN 5</span>
+                        </div>
+                        <div class="h-1 w-12 bg-tertiary-fixed rounded-full"></div>
+                    </div>
+
+                    <div class="relative z-20 mt-auto flex flex-col gap-6">
+                        <h1 class="font-display-lg text-display-lg text-on-primary leading-tight max-w-md">
+                            Perpustakaan Digital SMKN 5
+                        </h1>
+                        <p class="font-body-md text-body-md text-primary-fixed-dim max-w-sm">
+                            Jelajahi ribuan koleksi buku digital dan tingkatkan pengetahuan Anda bersama kami.
+                        </p>
+                        <!-- Decorative Stats -->
+                        <div class="flex gap-4 mt-8">
+                            <div class="flex flex-col gap-1">
+                                <span class="font-title-sm text-title-sm text-on-primary">15K+</span>
+                                <span class="font-label-caps text-label-caps text-primary-fixed-dim">Koleksi Buku</span>
+                            </div>
+                            <div class="w-[1px] h-12 bg-primary-fixed-dim/30"></div>
+                            <div class="flex flex-col gap-1">
+                                <span class="font-title-sm text-title-sm text-on-primary">2.4K</span>
+                                <span class="font-label-caps text-label-caps text-primary-fixed-dim">Anggota Aktif</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Decorative Circle -->
+                    <div class="absolute -bottom-32 -left-32 w-96 h-96 bg-secondary/20 rounded-full blur-3xl z-0 pointer-events-none"></div>
+                </div>
+
+                <!-- Right Panel -->
+                <div class="w-full lg:w-1/2 flex items-center justify-center p-8 sm:p-12 lg:p-24 bg-surface-container-lowest relative z-30">
+                    <div class="w-full max-w-xl z-10 relative overflow-hidden transition-all duration-500 ease-in-out" id="registration-container">
+                        <!-- Header Section -->
+                        <div class="flex flex-col items-center mb-8 text-center">
+                            <h1 class="font-display-lg text-display-lg text-primary mb-2">Form Pendaftaran Siswa</h1>
+                            <p class="font-body-md text-body-md text-on-surface-variant max-w-md mx-auto">Lengkapi data diri Anda sebagai siswa SMKN 5</p>
+                        </div>
+
+                        <!-- Errors -->
+                        @if ($errors->any())
+                            <div class="p-4 mb-6 bg-error-container/40 border border-error rounded-lg text-error text-body-sm space-y-1">
+                                @foreach ($errors->all() as $error)
+                                    <p>{{ $error }}</p>
+                                @endforeach
+                            </div>
+                        @endif
+
+                        <form class="space-y-6" method="POST" action="{{ route('register.siswa') }}" enctype="multipart/form-data">
+                            @csrf
+
+                            <div class="flex flex-col items-center justify-center mb-8">
+                                <label for="siswa_profile_photo" class="cursor-pointer relative group flex flex-col items-center">
+                                    <div class="w-24 h-24 rounded-full bg-surface-container-high flex items-center justify-center border-2 border-dashed border-outline-variant group-hover:bg-primary-fixed group-hover:border-secondary transition-all overflow-hidden relative shadow-sm">
+                                        <img id="siswa-photo-preview" src="" alt="Preview" class="w-full h-full object-cover hidden">
+                                        <span id="siswa-photo-placeholder" class="material-symbols-outlined text-3xl text-on-surface-variant group-hover:text-primary transition-colors">add_a_photo</span>
+                                    </div>
+                                    <div class="absolute bottom-6 right-0 bg-primary text-on-primary p-1.5 rounded-full shadow-md group-hover:scale-110 transition-transform">
+                                        <span class="material-symbols-outlined text-[16px] block">photo_camera</span>
+                                    </div>
+                                    <input
+                                        id="siswa_profile_photo"
+                                        accept="image/png,image/jpeg,image/jpg,image/webp"
+                                        class="hidden"
+                                        type="file"
+                                        name="profile_photo"
+                                        onchange="
+                                            const file = this.files[0];
+                                            if (file) {
+                                                const reader = new FileReader();
+                                                reader.onload = (e) => {
+                                                    const img = document.getElementById('siswa-photo-preview');
+                                                    const placeholder = document.getElementById('siswa-photo-placeholder');
+                                                    img.src = e.target.result;
+                                                    img.classList.remove('hidden');
+                                                    placeholder.classList.add('hidden');
+                                                };
+                                                reader.readAsDataURL(file);
+                                            }
+                                        "
+                                    >
+                                </label>
+                                <p class="font-label-caps text-label-caps text-on-surface-variant mt-1 uppercase">Foto Profil</p>
+                                <p class="font-label-caps text-xs text-outline">JPG, PNG atau WebP (Maksimal 2MB)</p>
+                                <div class="w-full max-w-xs mt-2">
+                                    <input type="url" name="profile_photo_url" value="{{ old('profile_photo_url') }}" placeholder="Atau tautan URL foto (https://...)" class="w-full px-3 py-1.5 text-center bg-surface-container-lowest border border-outline-variant rounded-lg font-body-sm text-xs text-on-surface focus:outline-none focus:border-secondary">
+                                    @error('profile_photo_url')
+                                        <p class="text-error text-xs mt-1 text-center">{{ $message }}</p>
+                                    @enderror
+                                </div>
+                            </div>
+
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <!-- Nama Lengkap -->
+                                <div class="space-y-2">
+                                    <label class="font-label-caps text-label-caps text-on-surface-variant uppercase block">Nama Lengkap</label>
+                                    <div class="relative">
+                                        <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant">person</span>
+                                        <input class="w-full pl-10 pr-4 py-3 bg-surface-container-lowest border border-outline-variant rounded-lg font-body-md text-body-md text-on-surface focus:outline-none focus:border-secondary focus:ring-1 focus:ring-secondary transition-all placeholder:text-outline" placeholder="Nama lengkap" required type="text" name="name" value="{{ old('name') }}">
+                                    </div>
+                                </div>
+
+                                <!-- Email -->
+                                <div class="space-y-2">
+                                    <label class="font-label-caps text-label-caps text-on-surface-variant uppercase block">Email</label>
+                                    <div class="relative">
+                                        <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant">mail</span>
+                                        <input class="w-full pl-10 pr-4 py-3 bg-surface-container-lowest border border-outline-variant rounded-lg font-body-md text-body-md text-on-surface focus:outline-none focus:border-secondary focus:ring-1 focus:ring-secondary transition-all placeholder:text-outline" placeholder="nama@email.com" required type="email" name="email" value="{{ old('email') }}">
+                                    </div>
+                                </div>
+
+                                <!-- Nomor Telepon -->
+                                <div class="space-y-2">
+                                    <label class="font-label-caps text-label-caps text-on-surface-variant uppercase block">Nomor Telepon</label>
+                                    <div class="relative">
+                                        <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant">call</span>
+                                        <input class="w-full pl-10 pr-4 py-3 bg-surface-container-lowest border border-outline-variant rounded-lg font-body-md text-body-md text-on-surface focus:outline-none focus:border-secondary focus:ring-1 focus:ring-secondary transition-all placeholder:text-outline" placeholder="08xxxxxxxxxx" required type="tel" name="phone" value="{{ old('phone') }}">
+                                    </div>
+                                </div>
+
+                                <!-- Username -->
+                                <div class="space-y-2">
+                                    <label class="font-label-caps text-label-caps text-on-surface-variant uppercase block">Username</label>
+                                    <div class="relative">
+                                        <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant">alternate_email</span>
+                                        <input class="w-full pl-10 pr-4 py-3 bg-surface-container-lowest border border-outline-variant rounded-lg font-body-md text-body-md text-on-surface focus:outline-none focus:border-secondary focus:ring-1 focus:ring-secondary transition-all placeholder:text-outline" placeholder="Username" required type="text" name="username" value="{{ old('username') }}">
+                                    </div>
+                                </div>
+
+                                <!-- NIS -->
+                                <div class="space-y-2">
+                                    <label class="font-label-caps text-label-caps text-on-surface-variant uppercase block">NIS</label>
+                                    <div class="relative">
+                                        <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant">badge</span>
+                                        <input class="w-full pl-10 pr-4 py-3 bg-surface-container-lowest border border-outline-variant rounded-lg font-body-md text-body-md text-on-surface focus:outline-none focus:border-secondary focus:ring-1 focus:ring-secondary transition-all placeholder:text-outline" placeholder="Nomor Induk Siswa" required type="text" name="nis" value="{{ old('nis') }}">
+                                    </div>
+                                </div>
+
+                                <!-- Kelas -->
+                                <div class="space-y-2">
+                                    <label class="font-label-caps text-label-caps text-on-surface-variant uppercase block">Kelas</label>
+                                    <div class="relative">
+                                        <select class="w-full pl-4 pr-10 py-3 bg-surface-container-lowest border border-outline-variant rounded-lg font-body-md text-body-md text-on-surface focus:outline-none focus:border-secondary focus:ring-1 focus:ring-secondary transition-all appearance-none" required name="class">
+                                            <option disabled selected value="">Pilih Kelas</option>
+                                            <option value="XI RPL 1" @selected(old('class') == 'XI RPL 1')">XI RPL 1</option>
+                                            <option value="XI RPL 2" @selected(old('class') == 'XI RPL 2')">XI RPL 2</option>
+                                            <option value="XI TKJ 1" @selected(old('class') == 'XI TKJ 1')">XI TKJ 1</option>
+                                        </select>
+                                        <span class="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 text-on-surface-variant pointer-events-none">expand_more</span>
+                                    </div>
+                                </div>
+
+                                <!-- Jurusan -->
+                                <div class="space-y-2 md:col-span-2">
+                                    <label class="font-label-caps text-label-caps text-on-surface-variant uppercase block">Jurusan</label>
+                                    <div class="relative">
+                                        <select class="w-full pl-4 pr-10 py-3 bg-surface-container-lowest border border-outline-variant rounded-lg font-body-md text-body-md text-on-surface focus:outline-none focus:border-secondary focus:ring-1 focus:ring-secondary transition-all appearance-none" required name="major">
+                                            <option disabled selected value="">Pilih Jurusan</option>
+                                            <option value="RPL" @selected(old('major') == 'RPL')">Rekayasa Perangkat Lunak</option>
+                                            <option value="TKJ" @selected(old('major') == 'TKJ')">Teknik Komputer & Jaringan</option>
+                                            <option value="MM" @selected(old('major') == 'MM')">Multimedia</option>
+                                        </select>
+                                        <span class="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 text-on-surface-variant pointer-events-none">expand_more</span>
+                                    </div>
+                                </div>
+
+                                <!-- Password -->
+                                <div class="space-y-2">
+                                    <label class="font-label-caps text-label-caps text-on-surface-variant uppercase block">Password</label>
+                                    <div class="relative">
+                                        <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant">lock</span>
+                                        <input class="w-full pl-10 pr-12 py-3 bg-surface-container-lowest border border-outline-variant rounded-lg font-body-md text-body-md text-on-surface focus:outline-none focus:border-secondary focus:ring-1 focus:ring-secondary transition-all placeholder:text-outline" placeholder="Minimal 8 karakter" required minlength="8" type="password" name="password">
+                                        <button class="absolute right-3 top-1/2 -translate-y-1/2 text-on-surface-variant hover:text-on-surface btn-toggle-password focus:outline-none" type="button">
+                                            <span class="material-symbols-outlined">visibility_off</span>
+                                        </button>
+                                    </div>
+                                    <p class="font-label-caps text-xs text-on-surface-variant/70">Minimal 8 karakter</p>
+                                </div>
+
+                                <!-- Konfirmasi Password -->
+                                <div class="space-y-2">
+                                    <label class="font-label-caps text-label-caps text-on-surface-variant uppercase block">Konfirmasi Password</label>
+                                    <div class="relative">
+                                        <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant">lock_reset</span>
+                                        <input class="w-full pl-10 pr-12 py-3 bg-surface-container-lowest border border-outline-variant rounded-lg font-body-md text-body-md text-on-surface focus:outline-none focus:border-secondary focus:ring-1 focus:ring-secondary transition-all placeholder:text-outline" placeholder="Ulangi password" required minlength="8" type="password" name="password_confirmation">
+                                        <button class="absolute right-3 top-1/2 -translate-y-1/2 text-on-surface-variant hover:text-on-surface btn-toggle-password focus:outline-none" type="button">
+                                            <span class="material-symbols-outlined">visibility_off</span>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <label class="flex items-start gap-3 p-4 bg-surface rounded-lg cursor-pointer group">
+                                <div class="relative flex items-center justify-center mt-0.5">
+                                    <input class="peer appearance-none w-5 h-5 border-2 border-outline rounded bg-surface-container-lowest checked:bg-primary checked:border-primary transition-colors cursor-pointer" required type="checkbox" name="terms">
+                                    <span class="material-symbols-outlined absolute text-on-primary text-[16px] opacity-0 peer-checked:opacity-100 pointer-events-none transition-opacity" style="font-variation-settings: 'FILL' 1;">check</span>
+                                </div>
+                                <span class="font-body-sm text-body-sm text-on-surface-variant">Saya menyetujui <a class="text-secondary hover:underline font-semibold" href="#">Syarat & Ketentuan</a>.</span>
+                            </label>
+
+                            <button class="w-full py-3.5 bg-primary text-on-primary rounded-lg font-body-md text-body-md font-semibold hover:bg-primary-container hover:shadow-lg transition-all flex justify-center items-center gap-2 group" type="submit">
+                                Daftar <span class="material-symbols-outlined group-hover:translate-x-1 transition-transform">person_add</span>
+                            </button>
+
+                            <div class="text-center mt-6">
+                                <a class="font-body-sm text-body-sm text-secondary hover:underline font-semibold" href="{{ route('login') }}">Sudah punya akun? Masuk</a>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const togglePasswordBtns = document.querySelectorAll('.btn-toggle-password');
+
+            // Password Toggle Visibility
+            togglePasswordBtns.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const input = this.previousElementSibling;
+                    const icon = this.querySelector('span');
+
+                    if (input.type === 'password') {
+                        input.type = 'text';
+                        icon.textContent = 'visibility';
+                    } else {
+                        input.type = 'password';
+                        icon.textContent = 'visibility_off';
+                    }
+                });
+            });
+        });
+    </script>
+    <x-sweetalert />
+</body>
+</html>
