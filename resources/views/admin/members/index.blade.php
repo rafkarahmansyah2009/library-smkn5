@@ -55,7 +55,11 @@
                         </select>
                         <span class="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 text-on-surface-variant pointer-events-none">expand_more</span>
                     </div>
-                    @if(request('q') || request('tipe') || request('status'))
+                    <div class="flex items-center gap-2">
+                        <input type="checkbox" name="trashed" value="1" id="trashed" {{ request('trashed') ? 'checked' : '' }} onchange="this.form.submit()" class="w-4 h-4 rounded border-outline-variant text-secondary focus:ring-secondary">
+                        <label for="trashed" class="text-body-sm text-on-surface-variant cursor-pointer">Tampilkan yang Dinonaktifkan</label>
+                    </div>
+                    @if(request('q') || request('tipe') || request('status') || request('trashed'))
                         <a href="{{ route('admin.members.index') }}" class="px-4 py-3 bg-surface-container hover:bg-surface-container-high rounded-xl text-on-surface-variant font-body-sm text-body-sm flex items-center justify-center">
                             Reset
                         </a>
@@ -109,22 +113,22 @@
             <!-- Members Table -->
             <div class="bg-surface-container-lowest rounded-2xl shadow-sm border border-outline-variant/50 overflow-hidden flex flex-col">
                 <div class="overflow-x-auto">
-                    <table class="w-full text-left border-collapse min-w-[1000px]">
+                    <table class="w-full text-left border-collapse">
                         <thead>
                             <tr class="bg-surface-container text-on-surface font-title-sm text-title-sm border-b border-outline-variant/50">
-                                <th class="py-4 px-6 font-semibold">Anggota</th>
-                                <th class="py-4 px-6 font-semibold">NIS / NIP</th>
-                                <th class="py-4 px-6 font-semibold">Tipe</th>
-                                <th class="py-4 px-6 font-semibold">Kelas / Mapel</th>
-                                <th class="py-4 px-6 font-semibold">Kontak</th>
-                                <th class="py-4 px-6 font-semibold text-center">Status</th>
-                                <th class="py-4 px-6 font-semibold text-right w-36">Aksi</th>
+                                <th class="py-3 px-3 font-semibold">Anggota</th>
+                                <th class="py-3 px-3 font-semibold">NIS / NIP</th>
+                                <th class="py-3 px-3 font-semibold">Tipe</th>
+                                <th class="py-3 px-3 font-semibold">Kelas / Mapel</th>
+                                <th class="py-3 px-3 font-semibold">Kontak</th>
+                                <th class="py-3 px-3 font-semibold text-center">Status</th>
+                                <th class="py-3 px-3 font-semibold text-center w-24">Aksi</th>
                             </tr>
                         </thead>
                         <tbody class="font-body-sm text-body-sm text-on-surface divide-y divide-outline-variant/30">
                             @forelse ($members as $member)
-                                <tr class="hover:bg-surface-container-low/50 transition-colors">
-                                    <td class="py-4 px-6">
+                                <tr class="hover:bg-surface-container-low/50 transition-colors {{ $member->trashed() ? 'bg-error/5' : '' }}">
+                                    <td class="py-2.5 px-3">
                                         <div class="flex items-center gap-3">
                                             @if ($member->avatar)
                                                 <img src="{{ $member->avatar }}" alt="{{ $member->name }}" class="w-10 h-10 rounded-full object-cover border border-outline-variant/50">
@@ -134,17 +138,26 @@
                                                 </div>
                                             @endif
                                             <div>
-                                                <a href="{{ route('admin.members.show', $member) }}" class="font-semibold text-primary hover:text-secondary block">
-                                                    {{ $member->name }}
-                                                </a>
+                                                @if ($member->trashed())
+                                                    <div class="flex items-center gap-2">
+                                                        <span class="font-semibold text-error block">
+                                                            {{ $member->name }}
+                                                        </span>
+                                                        <span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold uppercase bg-error/10 text-error">Dinonaktifkan</span>
+                                                    </div>
+                                                @else
+                                                    <a href="{{ route('admin.members.show', $member) }}" class="font-semibold text-primary hover:text-secondary block">
+                                                        {{ $member->name }}
+                                                    </a>
+                                                @endif
                                                 <span class="text-xs text-on-surface-variant font-mono">{{ $member->username ?? $member->email }}</span>
                                             </div>
                                         </div>
                                     </td>
-                                    <td class="py-4 px-6 font-mono text-on-surface">
+                                    <td class="py-2.5 px-3 font-mono text-on-surface">
                                         {{ $member->isSiswa() ? ($member->nis ?? '-') : ($member->nip ?? '-') }}
                                     </td>
-                                    <td class="py-4 px-6">
+                                    <td class="py-2.5 px-3">
                                         @if ($member->isSiswa())
                                             <span class="inline-flex items-center px-2.5 py-1 rounded-md bg-secondary-fixed/50 text-on-secondary-fixed-variant text-xs font-semibold">
                                                 Siswa
@@ -155,7 +168,7 @@
                                             </span>
                                         @endif
                                     </td>
-                                    <td class="py-4 px-6 text-on-surface">
+                                    <td class="py-2.5 px-3 text-on-surface">
                                         @if ($member->isSiswa())
                                             <span>{{ $member->class ?? '-' }}</span>
                                             @if($member->major)
@@ -165,12 +178,16 @@
                                             <span>{{ $member->subject ?? 'Guru SMKN 5' }}</span>
                                         @endif
                                     </td>
-                                    <td class="py-4 px-6">
+                                    <td class="py-2.5 px-3">
                                         <span class="text-xs text-on-surface block">{{ $member->email }}</span>
                                         <span class="text-xs text-on-surface-variant block mt-0.5">{{ $member->phone ?? '-' }}</span>
                                     </td>
-                                    <td class="py-4 px-6 text-center">
-                                        @if ($member->status === 'active')
+                                    <td class="py-2.5 px-3 text-center">
+                                        @if ($member->trashed())
+                                            <span class="inline-flex items-center justify-center px-2.5 py-1 rounded text-[11px] font-bold uppercase tracking-wider bg-error-container text-error">
+                                                Dinonaktifkan
+                                            </span>
+                                        @elseif ($member->status === 'active')
                                             <span class="inline-flex items-center px-2.5 py-1 rounded text-[11px] font-bold uppercase tracking-wider bg-secondary-container/20 text-secondary">
                                                 Aktif
                                             </span>
@@ -180,28 +197,54 @@
                                             </span>
                                         @endif
                                     </td>
-                                    <td class="py-4 px-6 text-right">
-                                        <div class="flex items-center justify-end gap-1.5">
-                                            <a href="{{ route('admin.members.show', $member) }}" class="p-2 rounded-lg text-on-surface-variant hover:bg-surface-container hover:text-secondary transition-colors" title="Lihat Profil">
-                                                <span class="material-symbols-outlined text-[20px]">visibility</span>
-                                            </a>
-                                            <a href="{{ route('admin.members.edit', $member) }}" class="p-2 rounded-lg text-on-surface-variant hover:bg-surface-container hover:text-secondary transition-colors" title="Edit Anggota">
-                                                <span class="material-symbols-outlined text-[20px]">edit</span>
-                                            </a>
-                                            <form method="POST" action="{{ route('admin.members.toggle-status', $member) }}" class="inline confirm-action"
-                                                data-confirm-title="{{ $member->status === 'active' ? 'Nonaktifkan Anggota' : 'Aktifkan Anggota' }}"
-                                                data-confirm="Apakah Anda yakin ingin {{ $member->status === 'active' ? 'menonaktifkan' : 'mengaktifkan kembali' }} akun anggota {{ $member->name }}?"
-                                                data-confirm-icon="{{ $member->status === 'active' ? 'warning' : 'question' }}"
-                                                data-confirm-button-text="{{ $member->status === 'active' ? 'Ya, Nonaktifkan!' : 'Ya, Aktifkan!' }}"
-                                                data-confirm-button-color="{{ $member->status === 'active' ? '#dc2626' : '#059669' }}">
-                                                @csrf
-                                                @method('PATCH')
-                                                <button type="submit" class="p-2 rounded-lg {{ $member->status === 'active' ? 'text-on-surface-variant hover:text-error hover:bg-error-container/20' : 'text-secondary hover:bg-secondary-container/20' }} transition-colors" title="{{ $member->status === 'active' ? 'Nonaktifkan' : 'Aktifkan' }}">
-                                                    <span class="material-symbols-outlined text-[20px]">
-                                                        {{ $member->status === 'active' ? 'block' : 'check_circle' }}
-                                                    </span>
-                                                </button>
-                                            </form>
+                                    <td class="py-2.5 px-3 text-center">
+                                        <div class="flex items-center justify-center gap-1.5">
+                                            @if ($member->trashed())
+                                                <!-- Actions for trashed members -->
+                                                <form method="POST" action="{{ route('admin.members.restore', $member->id) }}" class="inline confirm-action"
+                                                    data-confirm-title="Aktifkan Kembali Anggota"
+                                                    data-confirm="Apakah Anda yakin ingin mengaktifkan kembali akun anggota '{{ $member->name }}'?"
+                                                    data-confirm-icon="question"
+                                                    data-confirm-button-text="Ya, Aktifkan!"
+                                                    data-confirm-button-color="#059669">
+                                                    @csrf
+                                                    <button type="submit" class="p-1.5 rounded-md text-secondary hover:bg-secondary-container/20 transition-colors cursor-pointer border-none bg-transparent" title="Aktifkan Kembali">
+                                                        <span class="material-symbols-outlined text-[18px]">restore</span>
+                                                    </button>
+                                                </form>
+                                                <form method="POST" action="{{ route('admin.members.force-delete', $member->id) }}" class="inline confirm-action"
+                                                    data-confirm-title="Hapus Permanen Anggota"
+                                                    data-confirm="Apakah Anda yakin ingin menghapus permanen anggota '{{ $member->name }}'? Tindakan ini tidak dapat dibatalkan!"
+                                                    data-confirm-icon="warning"
+                                                    data-confirm-button-text="Ya, Hapus!"
+                                                    data-confirm-button-color="#dc2626">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button type="submit" class="p-1.5 rounded-md text-error hover:bg-error-container transition-colors cursor-pointer border-none bg-transparent" title="Hapus Permanen">
+                                                        <span class="material-symbols-outlined text-[18px]">delete_forever</span>
+                                                    </button>
+                                                </form>
+                                            @else
+                                                <!-- Actions for active members -->
+                                                <a href="{{ route('admin.members.show', $member) }}" class="p-1.5 rounded-md text-on-surface-variant hover:bg-surface-container hover:text-secondary transition-colors cursor-pointer border-none bg-transparent" title="Lihat Profil">
+                                                    <span class="material-symbols-outlined text-[18px]">visibility</span>
+                                                </a>
+                                                <a href="{{ route('admin.members.edit', $member) }}" class="p-1.5 rounded-md text-on-surface-variant hover:bg-surface-container hover:text-secondary transition-colors cursor-pointer border-none bg-transparent" title="Edit Anggota">
+                                                    <span class="material-symbols-outlined text-[18px]">edit</span>
+                                                </a>
+                                                <form method="POST" action="{{ route('admin.members.destroy', $member) }}" class="inline confirm-action"
+                                                    data-confirm-title="Nonaktifkan Anggota"
+                                                    data-confirm="Apakah Anda yakin ingin menonaktifkan anggota '{{ $member->name }}' dari sistem?"
+                                                    data-confirm-icon="warning"
+                                                    data-confirm-button-text="Ya, Nonaktifkan!"
+                                                    data-confirm-button-color="#dc2626">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button type="submit" class="p-1.5 rounded-md text-error hover:bg-error-container transition-colors cursor-pointer border-none bg-transparent" title="Nonaktifkan">
+                                                        <span class="material-symbols-outlined text-[18px]">power_settings_new</span>
+                                                    </button>
+                                                </form>
+                                            @endif
                                         </div>
                                     </td>
                                 </tr>

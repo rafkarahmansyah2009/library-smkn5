@@ -82,25 +82,25 @@
             <!-- Table Card -->
             <div class="bg-surface-container-lowest rounded-2xl shadow-sm border border-outline-variant/50 overflow-hidden flex flex-col">
                 <div class="overflow-x-auto">
-                    <table class="w-full text-left border-collapse min-w-[1050px]">
+                    <table class="w-full text-left border-collapse">
                         <thead>
                             <tr class="bg-surface-container text-on-surface font-title-sm text-title-sm border-b border-outline-variant/50">
-                                <th class="py-4 px-6 font-semibold">Kode Transaksi</th>
-                                <th class="py-4 px-6 font-semibold">Peminjam</th>
-                                <th class="py-4 px-6 font-semibold">Buku Dipinjam</th>
-                                <th class="py-4 px-6 font-semibold">Tgl Pinjam &amp; Tempo</th>
-                                <th class="py-4 px-6 font-semibold text-center">Status Waktu</th>
-                                <th class="py-4 px-6 font-semibold text-center">Denda</th>
-                                <th class="py-4 px-6 font-semibold text-right w-44">Aksi</th>
+                                <th class="py-3 px-3 font-semibold">Kode Transaksi</th>
+                                <th class="py-3 px-3 font-semibold">Peminjam</th>
+                                <th class="py-3 px-3 font-semibold">Buku Dipinjam</th>
+                                <th class="py-3 px-3 font-semibold">Tgl Pinjam &amp; Tempo</th>
+                                <th class="py-3 px-3 font-semibold text-center">Status Waktu</th>
+                                <th class="py-3 px-3 font-semibold text-center">Denda</th>
+                                <th class="py-3 px-3 font-semibold text-center w-36">Aksi</th>
                             </tr>
                         </thead>
                         <tbody class="font-body-sm text-body-sm text-on-surface divide-y divide-outline-variant/30">
                             @forelse ($borrowings as $b)
                                 <tr class="hover:bg-surface-container-low/50 transition-colors">
-                                    <td class="py-4 px-6">
+                                    <td class="py-2.5 px-3">
                                         <span class="font-mono font-bold text-secondary">{{ $b->transaction_code }}</span>
                                     </td>
-                                    <td class="py-4 px-6">
+                                    <td class="py-2.5 px-3">
                                         <div class="flex flex-col">
                                             <span class="font-semibold text-primary">{{ $b->user->name }}</span>
                                             <span class="text-xs text-on-surface-variant font-mono">
@@ -108,28 +108,28 @@
                                             </span>
                                         </div>
                                     </td>
-                                    <td class="py-4 px-6">
-                                        <div class="flex items-center gap-3">
+                                    <td class="py-2.5 px-3">
+                                        <div class="flex items-center gap-2">
                                             @if ($b->book?->cover_image)
-                                                <img src="{{ $b->book->cover_image }}" alt="{{ $b->book->title }}" class="w-9 h-12 object-cover rounded shadow-sm">
+                                                <img src="{{ $b->book->cover_image }}" alt="{{ $b->book->title }}" class="w-8 h-11 object-cover rounded shadow-sm flex-shrink-0">
                                             @else
-                                                <div class="w-9 h-12 bg-surface-container rounded flex items-center justify-center text-on-surface-variant">
+                                                <div class="w-8 h-11 bg-surface-container rounded flex items-center justify-center text-on-surface-variant flex-shrink-0">
                                                     <span class="material-symbols-outlined text-sm">book</span>
                                                 </div>
                                             @endif
-                                            <div class="truncate max-w-[240px]">
+                                            <div class="truncate max-w-[180px]">
                                                 <span class="font-semibold text-on-surface block truncate" title="{{ $b->book?->title ?? 'Buku Dihapus' }}">{{ $b->book?->title ?? 'Buku Dihapus' }}</span>
                                                 <span class="text-xs text-on-surface-variant">{{ $b->book?->author ?? '-' }}</span>
                                             </div>
                                         </div>
                                     </td>
-                                    <td class="py-4 px-6 text-on-surface">
+                                    <td class="py-2.5 px-3 text-on-surface">
                                         <span class="text-xs text-on-surface-variant block">Pinjam: {{ $b->borrow_date->format('d/m/Y') }}</span>
                                         <span class="font-semibold block {{ $b->isOverdue() && $b->status !== 'returned' ? 'text-error' : 'text-on-surface' }}">
                                             Tempo: {{ $b->due_date->format('d/m/Y') }}
                                         </span>
                                     </td>
-                                    <td class="py-4 px-6 text-center">
+                                    <td class="py-2.5 px-3 text-center">
                                         @if ($b->status === 'returned')
                                             <span class="inline-flex px-2.5 py-1 rounded text-[11px] font-bold uppercase tracking-wider bg-surface-container text-on-surface-variant">
                                                 Dikembalikan

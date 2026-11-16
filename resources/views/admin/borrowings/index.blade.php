@@ -89,25 +89,25 @@
             <!-- Table Card -->
             <div class="bg-surface-container-lowest rounded-2xl shadow-sm border border-outline-variant/50 overflow-hidden flex flex-col">
                 <div class="overflow-x-auto">
-                    <table class="w-full text-left border-collapse min-w-[1050px]">
+                    <table class="w-full text-left border-collapse">
                         <thead>
                             <tr class="bg-surface-container text-on-surface font-title-sm text-title-sm border-b border-outline-variant/50">
-                                <th class="py-4 px-6 font-semibold">Kode Transaksi</th>
-                                <th class="py-4 px-6 font-semibold">Peminjam</th>
-                                <th class="py-4 px-6 font-semibold">Buku</th>
-                                <th class="py-4 px-6 font-semibold">Tgl Pinjam</th>
-                                <th class="py-4 px-6 font-semibold">Batas Waktu</th>
-                                <th class="py-4 px-6 font-semibold text-center">Status</th>
-                                <th class="py-4 px-6 font-semibold text-right w-36">Aksi</th>
+                                <th class="py-3 px-3 font-semibold">Kode Transaksi</th>
+                                <th class="py-3 px-3 font-semibold">Peminjam</th>
+                                <th class="py-3 px-3 font-semibold">Buku</th>
+                                <th class="py-3 px-3 font-semibold">Tgl Pinjam</th>
+                                <th class="py-3 px-3 font-semibold">Batas Waktu</th>
+                                <th class="py-3 px-3 font-semibold text-center">Status</th>
+                                <th class="py-3 px-3 font-semibold text-center w-28">Aksi</th>
                             </tr>
                         </thead>
                         <tbody class="font-body-sm text-body-sm text-on-surface divide-y divide-outline-variant/30">
                             @forelse ($borrowings as $b)
                                 <tr class="hover:bg-surface-container-low/50 transition-colors">
-                                    <td class="py-4 px-6">
+                                    <td class="py-2.5 px-3">
                                         <span class="font-mono font-bold text-secondary">{{ $b->transaction_code }}</span>
                                     </td>
-                                    <td class="py-4 px-6">
+                                    <td class="py-2.5 px-3">
                                         <div class="flex flex-col">
                                             <span class="font-semibold text-primary">{{ $b->user->name }}</span>
                                             <span class="text-xs text-on-surface-variant mt-0.5 font-mono">
@@ -115,25 +115,25 @@
                                             </span>
                                         </div>
                                     </td>
-                                    <td class="py-4 px-6">
-                                        <div class="flex items-center gap-3">
+                                    <td class="py-2.5 px-3">
+                                        <div class="flex items-center gap-2">
                                             @if ($b->book?->cover_image)
-                                                <img src="{{ $b->book->cover_image }}" alt="{{ $b->book->title }}" class="w-9 h-12 object-cover rounded shadow-sm">
+                                                <img src="{{ $b->book->cover_image }}" alt="{{ $b->book->title }}" class="w-8 h-11 object-cover rounded shadow-sm flex-shrink-0">
                                             @else
-                                                <div class="w-9 h-12 bg-surface-container rounded flex items-center justify-center text-on-surface-variant">
+                                                <div class="w-8 h-11 bg-surface-container rounded flex items-center justify-center text-on-surface-variant flex-shrink-0">
                                                     <span class="material-symbols-outlined text-sm">book</span>
                                                 </div>
                                             @endif
-                                            <div class="truncate max-w-[260px]">
+                                            <div class="truncate max-w-[180px]">
                                                 <span class="font-semibold text-on-surface block truncate" title="{{ $b->book?->title ?? 'Buku Dihapus' }}">{{ $b->book?->title ?? 'Buku Dihapus' }}</span>
                                                 <span class="text-xs text-on-surface-variant">{{ $b->book?->author ?? '-' }}</span>
                                             </div>
                                         </div>
                                     </td>
-                                    <td class="py-4 px-6 text-on-surface whitespace-nowrap">
+                                    <td class="py-2.5 px-3 text-on-surface whitespace-nowrap">
                                         {{ $b->borrow_date->format('d M Y') }}
                                     </td>
-                                    <td class="py-4 px-6 whitespace-nowrap">
+                                    <td class="py-2.5 px-3 whitespace-nowrap">
                                         <span class="block {{ $b->isOverdue() && $b->status !== 'returned' ? 'text-error font-bold' : 'text-on-surface' }}">
                                             {{ $b->due_date->format('d M Y') }}
                                         </span>
@@ -141,13 +141,13 @@
                                             @if ($b->isOverdue())
                                                 <span class="text-[11px] text-error font-semibold block">Terlambat {{ $b->days_overdue }} hari</span>
                                             @else
-                                                <span class="text-[11px] text-secondary block">{{ now()->diffInDays($b->due_date, false) }} hari lagi</span>
+                                                <span class="text-[11px] text-secondary block">{{ (int) ceil(now()->diffInDays($b->due_date, false)) }} hari lagi</span>
                                             @endif
                                         @else
                                             <span class="text-[11px] text-on-surface-variant block">Dikembalikan {{ $b->return_date ? $b->return_date->format('d/m/Y') : '' }}</span>
                                         @endif
                                     </td>
-                                    <td class="py-4 px-6 text-center">
+                                    <td class="py-2.5 px-3 text-center">
                                         @if ($b->status === 'returned')
                                             <span class="inline-flex px-2.5 py-1 rounded text-[11px] font-bold uppercase tracking-wider bg-surface-container text-on-surface-variant">
                                                 Dikembalikan
@@ -162,7 +162,7 @@
                                             </span>
                                         @endif
                                     </td>
-                                    <td class="py-4 px-6 text-right">
+                                    <td class="py-2.5 px-3 text-center">
                                         @if ($b->status !== 'returned')
                                             <form method="POST" action="{{ route('admin.returns.process', $b) }}" class="inline confirm-action"
                                                 data-confirm-title="Konfirmasi Pengembalian Buku"
@@ -171,7 +171,7 @@
                                                 data-confirm-button-text="Ya, Kembalikan!"
                                                 data-confirm-button-color="#1e293b">
                                                 @csrf
-                                                <button type="submit" class="px-3 py-1.5 bg-secondary text-on-secondary hover:bg-secondary/90 rounded-lg text-xs font-semibold flex items-center gap-1.5 shadow-sm transition-all ml-auto">
+                                                <button type="submit" class="px-3 py-1.5 bg-secondary text-on-secondary hover:bg-secondary/90 rounded-lg text-xs font-semibold flex items-center gap-1.5 shadow-sm transition-all mx-auto">
                                                     <span class="material-symbols-outlined text-[16px]">assignment_return</span>
                                                     Kembalikan
                                                 </button>

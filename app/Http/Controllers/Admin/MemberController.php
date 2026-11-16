@@ -21,6 +21,11 @@ class MemberController extends Controller
     {
         $query = User::where('role', 'member');
 
+        // Show trashed members if requested
+        if ($request->boolean('trashed')) {
+            $query->onlyTrashed();
+        }
+
         if ($request->filled('q')) {
             $searchTerm = $request->input('q');
             $query->where(function ($q) use ($searchTerm) {
@@ -201,19 +206,58 @@ class MemberController extends Controller
     }
 
     /**
-     * Remove the specified member.
+     * Remove the specified member (soft delete/deactivate).
      */
     public function destroy(User $member): RedirectResponse
     {
         if ($member->borrowings()->where('status', 'borrowed')->exists()) {
-            return back()->with('error', 'Anggota tidak dapat dihapus karena masih memiliki peminjaman aktif.');
+            return back()->with('error', 'Anggota tidak dapat dinonaktifkan karena masih memiliki peminjaman aktif.');
         }
 
         $name = $member->name;
         $member->delete();
 
-        ActivityLog::record('member_deleted', "Anggota '{$name}' telah dihapus dari sistem.");
+        ActivityLog::record('member_deactivated', "Anggota '{$name}' dinonaktifkan dari sistem.");
 
-        return redirect()->route('admin.members.index')->with('success', 'Anggota berhasil dihapus.');
+        return redirect()->route('admin.members.index')->with('success', 'Anggota berhasil dinonaktifkan dari sistem.');
+    }
+
+    /**
+     * Restore the specified soft-deleted member.
+     */
+    public function restore($id): RedirectResponse
+    {
+        $member = User::withTrashed()->where('role', 'member')->findOrFail($id);
+        $member->restore();
+
+        ActivityLog::record('member_restored', "Anggota '{$member->name}' diaktifkan kembali ke sistem.");
+
+        return redirect()->route('admin.members.index')->with('success', 'Anggota berhasil diaktifkan kembali.');
+    }
+
+    /**
+     * Permanently delete the specified member.
+     */
+    public function forceDelete($id): RedirectResponse
+    {
+        $member = User::withTrashed()->where('role', 'member')->findOrFail($id);
+
+        if ($member->borrowings()->where('status', 'borrowed')->exists()) {
+            return back()->with('error', 'Anggota tidak dapat dihapus permanen karena masih memiliki peminjaman aktif.');
+        }
+
+        if ($member->avatar && str_starts_with($member->avatar, '/storage/')) {
+            $oldPath = str_replace('/storage/', '', $member->avatar);
+            if (Storage::disk('public')->exists($oldPath)) {
+                Storage::disk('public')->delete($oldPath);
+            }
+        }
+
+        $name = $member->name;
+        $member->forceDelete();
+
+        ActivityLog::record('member_permanently_deleted', "Anggota '{$name}' dihapus permanen dari sistem.");
+
+        return redirect()->route('admin.members.index')->with('success', 'Anggota berhasil dihapus permanen dari sistem.');
     }
 }

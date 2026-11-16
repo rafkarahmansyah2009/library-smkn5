@@ -123,7 +123,7 @@
                                     @if ($b->isOverdue())
                                         <span class="text-[11px] text-error font-medium">Terlambat {{ $b->days_overdue }} hari</span>
                                     @else
-                                        <span class="text-[11px] text-secondary font-medium">{{ now()->diffInDays($b->due_date, false) }} hari tersisa</span>
+                                        <span class="text-[11px] text-secondary font-medium">{{ (int) ceil(now()->diffInDays($b->due_date, false)) }} hari tersisa</span>
                                     @endif
                                 </td>
                                 <td class="py-4 px-6 text-center">

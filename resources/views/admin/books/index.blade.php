@@ -104,41 +104,41 @@
             <!-- Data Table Container -->
             <div class="bg-surface-container-lowest rounded-2xl shadow-sm border border-outline-variant/50 overflow-hidden flex flex-col">
                 <div class="overflow-x-auto">
-                    <table class="w-full text-left border-collapse min-w-[1000px]">
+                    <table class="w-full text-left border-collapse">
                         <thead>
                             <tr class="bg-surface-container text-on-surface font-title-sm text-title-sm border-b border-outline-variant/50">
-                                <th class="py-4 px-6 font-semibold w-16">Buku</th>
-                                <th class="py-4 px-6 font-semibold">Judul &amp; Penulis</th>
-                                <th class="py-4 px-6 font-semibold">Kategori</th>
-                                <th class="py-4 px-6 font-semibold">Penerbit &amp; Tahun</th>
-                                <th class="py-4 px-6 font-semibold text-center w-24">Stok</th>
-                                <th class="py-4 px-6 font-semibold text-center w-24">Tersedia</th>
-                                <th class="py-4 px-6 font-semibold text-center">Status</th>
-                                <th class="py-4 px-6 font-semibold text-right w-36">Aksi</th>
+                                <th class="py-3 px-3 font-semibold w-14">Buku</th>
+                                <th class="py-3 px-3 font-semibold">Judul &amp; Penulis</th>
+                                <th class="py-3 px-3 font-semibold">Kategori</th>
+                                <th class="py-3 px-3 font-semibold">Penerbit &amp; Tahun</th>
+                                <th class="py-3 px-3 font-semibold text-center w-16">Stok</th>
+                                <th class="py-3 px-3 font-semibold text-center w-20">Tersedia</th>
+                                <th class="py-3 px-3 font-semibold text-center">Status</th>
+                                <th class="py-3 px-3 font-semibold text-center w-24">Aksi</th>
                             </tr>
                         </thead>
                         <tbody class="font-body-sm text-body-sm text-on-surface divide-y divide-outline-variant/30">
                             @forelse ($books as $book)
                             <tr class="hover:bg-surface-container-low/50 transition-colors group {{ $book->trashed() ? 'bg-error/5' : '' }}">
-                                <td class="py-4 px-6">
+                                <td class="py-2.5 px-3">
                                     @if ($book->cover_image)
-                                    <img src="{{ $book->cover_image }}" alt="{{ $book->title }}" class="w-12 h-16 object-cover rounded shadow-sm">
+                                    <img src="{{ $book->cover_image }}" alt="{{ $book->title }}" class="w-10 h-14 object-cover rounded shadow-sm">
                                     @else
-                                    <div class="w-12 h-16 bg-surface-container-high rounded flex items-center justify-center text-on-surface-variant shadow-sm">
+                                    <div class="w-10 h-14 bg-surface-container-high rounded flex items-center justify-center text-on-surface-variant shadow-sm">
                                         <span class="material-symbols-outlined text-xl">menu_book</span>
                                     </div>
                                     @endif
                                 </td>
-                                <td class="py-4 px-6">
+                                <td class="py-2.5 px-3">
                                     <div class="flex flex-col">
                                         <div class="flex items-center gap-2">
                                             @if ($book->trashed())
-                                            <span class="font-semibold text-error truncate max-w-[280px]" title="{{ $book->title }}">
+                                            <span class="font-semibold text-error truncate max-w-[200px]" title="{{ $book->title }}">
                                                 {{ $book->title }}
                                             </span>
                                             <span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold uppercase bg-error/10 text-error">Dinonaktifkan</span>
                                             @else
-                                            <a href="{{ route('admin.books.show', $book) }}" class="font-semibold text-primary hover:text-secondary truncate max-w-[280px]" title="{{ $book->title }}">
+                                            <a href="{{ route('admin.books.show', $book) }}" class="font-semibold text-primary hover:text-secondary truncate max-w-[200px]" title="{{ $book->title }}">
                                                 {{ $book->title }}
                                             </a>
                                             @endif
@@ -149,22 +149,22 @@
                                         @endif
                                     </div>
                                 </td>
-                                <td class="py-4 px-6">
+                                <td class="py-2.5 px-3">
                                     <span class="inline-flex items-center px-2.5 py-1 rounded-md bg-surface-container text-on-surface-variant text-[12px] font-medium border border-outline-variant/30">
                                         {{ $book->category->name ?? 'Tanpa Kategori' }}
                                     </span>
                                 </td>
-                                <td class="py-4 px-6">
+                                <td class="py-2.5 px-3">
                                     <div class="flex flex-col">
                                         <span class="text-on-surface">{{ $book->publisher }}</span>
                                         <span class="text-on-surface-variant mt-0.5 text-[13px]">Tahun {{ $book->publication_year }}</span>
                                     </div>
                                 </td>
-                                <td class="py-4 px-6 text-center font-semibold text-on-surface">{{ $book->stock }}</td>
-                                <td class="py-4 px-6 text-center font-semibold {{ $book->available_stock > 0 ? 'text-secondary' : 'text-error' }}">
+                                <td class="py-2.5 px-3 text-center font-semibold text-on-surface">{{ $book->stock }}</td>
+                                <td class="py-2.5 px-3 text-center font-semibold {{ $book->available_stock > 0 ? 'text-secondary' : 'text-error' }}">
                                     {{ $book->available_stock }}
                                 </td>
-                                <td class="py-4 px-6 text-center">
+                                <td class="py-2.5 px-3 text-center">
                                     @if ($book->trashed())
                                     <span class="inline-flex items-center justify-center px-2.5 py-1 rounded text-[11px] font-bold uppercase tracking-wider bg-error-container text-error">
                                         Dinonaktifkan
@@ -179,8 +179,8 @@
                                     </span>
                                     @endif
                                 </td>
-                                <td class="py-4 px-6 text-right">
-                                    <div class="flex items-center justify-end gap-1.5">
+                                <td class="py-2.5 px-3 text-center">
+                                    <div class="flex items-center justify-center gap-1.5">
                                         @if ($book->trashed())
                                         <!-- Actions for trashed books -->
                                         <form method="POST" action="{{ route('admin.books.restore', $book->id) }}" class="inline confirm-action"

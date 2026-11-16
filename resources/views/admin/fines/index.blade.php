@@ -82,25 +82,25 @@
             <!-- Fines Table -->
             <div class="bg-surface-container-lowest rounded-2xl shadow-sm border border-outline-variant/50 overflow-hidden flex flex-col">
                 <div class="overflow-x-auto">
-                    <table class="w-full text-left border-collapse min-w-[1100px]">
+                    <table class="w-full text-left border-collapse">
                         <thead>
                             <tr class="bg-surface-container text-on-surface font-title-sm text-title-sm border-b border-outline-variant/50">
-                                <th class="py-4 px-6 font-semibold">Kode Transaksi</th>
-                                <th class="py-4 px-6 font-semibold">Anggota</th>
-                                <th class="py-4 px-6 font-semibold">Buku Terkait</th>
-                                <th class="py-4 px-6 font-semibold text-center">Keterlambatan</th>
-                                <th class="py-4 px-6 font-semibold text-center">Jumlah Denda</th>
-                                <th class="py-4 px-6 font-semibold text-center">Status & Metode</th>
-                                <th class="py-4 px-6 font-semibold text-right w-52">Aksi / Verifikasi</th>
+                                <th class="py-3 px-3 font-semibold">Kode Transaksi</th>
+                                <th class="py-3 px-3 font-semibold">Anggota</th>
+                                <th class="py-3 px-3 font-semibold">Buku Terkait</th>
+                                <th class="py-3 px-3 font-semibold text-center">Keterlambatan</th>
+                                <th class="py-3 px-3 font-semibold text-center">Jumlah Denda</th>
+                                <th class="py-3 px-3 font-semibold text-center">Status & Metode</th>
+                                <th class="py-3 px-3 font-semibold text-center w-40">Verifikasi</th>
                             </tr>
                         </thead>
                         <tbody class="font-body-sm text-body-sm text-on-surface divide-y divide-outline-variant/30">
                             @forelse ($fines as $fine)
                                 <tr class="hover:bg-surface-container-low/50 transition-colors">
-                                    <td class="py-4 px-6">
+                                    <td class="py-2.5 px-3">
                                         <span class="font-mono font-bold text-secondary">{{ $fine->borrowing->transaction_code ?? '-' }}</span>
                                     </td>
-                                    <td class="py-4 px-6">
+                                    <td class="py-2.5 px-3">
                                         <div class="flex flex-col">
                                             <span class="font-semibold text-primary">{{ $fine->user->name }}</span>
                                             <span class="text-xs text-on-surface-variant font-mono">
@@ -108,8 +108,8 @@
                                             </span>
                                         </div>
                                     </td>
-                                    <td class="py-4 px-6">
-                                        <div class="truncate max-w-[240px]">
+                                    <td class="py-2.5 px-3">
+                                        <div class="truncate max-w-[200px]">
                                             <span class="font-semibold text-on-surface block truncate" title="{{ $fine->borrowing->book->title ?? '-' }}">
                                                 {{ $fine->borrowing->book->title ?? '-' }}
                                             </span>
@@ -118,17 +118,17 @@
                                             </span>
                                         </div>
                                     </td>
-                                    <td class="py-4 px-6 text-center">
+                                    <td class="py-2.5 px-3 text-center">
                                         <span class="inline-flex px-2 py-0.5 rounded text-xs font-semibold bg-error-container/50 text-error">
                                             {{ $fine->days_overdue }} Hari
                                         </span>
                                     </td>
-                                    <td class="py-4 px-6 text-center">
+                                    <td class="py-2.5 px-3 text-center">
                                         <span class="font-bold text-base {{ $fine->isPaid() ? 'text-secondary' : 'text-error' }}">
                                             {{ $fine->formatted_amount }}
                                         </span>
                                     </td>
-                                    <td class="py-4 px-6 text-center">
+                                    <td class="py-2.5 px-3 text-center">
                                         @if ($fine->isPaid())
                                             <div class="inline-flex flex-col items-center gap-1">
                                                 <span class="inline-flex px-2.5 py-1 rounded text-[11px] font-bold uppercase tracking-wider bg-secondary-container/20 text-secondary">
@@ -156,9 +156,9 @@
                                             </span>
                                         @endif
                                     </td>
-                                    <td class="py-4 px-6 text-right">
+                                    <td class="py-2.5 px-3 text-center">
                                         @if ($fine->isPaid())
-                                            <div class="text-right">
+                                            <div class="text-center">
                                                 <span class="text-xs text-on-surface-variant block font-medium">
                                                     Bayar: {{ ($fine->paid_at ?? $fine->payment_date) ? ($fine->paid_at ?? $fine->payment_date)->format('d/m/Y H:i') : '-' }}
                                                 </span>
@@ -177,7 +177,7 @@
                                                 <button
                                                     @click="openModal = true"
                                                     type="button"
-                                                    class="px-3.5 py-2 bg-secondary text-on-secondary hover:bg-secondary/90 rounded-xl text-xs font-semibold flex items-center gap-1.5 shadow-sm transition-all ml-auto"
+                                                    class="px-3.5 py-2 bg-secondary text-on-secondary hover:bg-secondary/90 rounded-xl text-xs font-semibold flex items-center gap-1.5 shadow-sm transition-all mx-auto"
                                                 >
                                                     <span class="material-symbols-outlined text-[16px]">payments</span>
                                                     Tandai Lunas

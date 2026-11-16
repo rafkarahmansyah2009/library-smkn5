@@ -76,7 +76,7 @@
                                     <span class="text-xs text-error font-semibold block">Denda: Rp {{ number_format($b->days_overdue * 1000, 0, ',', '.') }}</span>
                                 @else
                                     <span class="inline-flex px-3 py-1 rounded-full text-xs font-bold uppercase bg-secondary-container/20 text-secondary mb-1">
-                                        {{ now()->diffInDays($b->due_date, false) }} Hari Tersisa
+                                        {{ (int) ceil(now()->diffInDays($b->due_date, false)) }} Hari Tersisa
                                     </span>
                                     <span class="text-xs text-secondary font-medium block">Peminjaman Aktif</span>
                                 @endif

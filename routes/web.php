@@ -70,6 +70,8 @@ Route::prefix('admin')->as('admin.')->middleware(['auth', 'role:admin'])->group(
     Route::resource('categories', AdminCategoryController::class)->except(['show']);
 
     // Members
+    Route::post('members/{id}/restore', [AdminMemberController::class, 'restore'])->name('members.restore');
+    Route::delete('members/{id}/force-delete', [AdminMemberController::class, 'forceDelete'])->name('members.force-delete');
     Route::resource('members', AdminMemberController::class);
     Route::patch('members/{member}/toggle-status', [AdminMemberController::class, 'toggleStatus'])->name('members.toggle-status');
 

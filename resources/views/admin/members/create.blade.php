@@ -154,7 +154,7 @@
                         </div>
 
                         <!-- Conditional: Siswa fields -->
-                        <div x-show="memberType === 'siswa'" class="space-y-6 md:col-span-2 grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <div x-show="memberType === 'siswa'" class="md:col-span-2 grid grid-cols-1 md:grid-cols-3 gap-6">
                             <div>
                                 <label for="nis" class="block font-title-sm text-body-sm font-semibold text-on-surface mb-2">Nomor Induk Siswa (NIS) <span class="text-error">*</span></label>
                                 <input
@@ -202,7 +202,7 @@
                         </div>
 
                         <!-- Conditional: Guru fields -->
-                        <div x-show="memberType === 'guru'" class="space-y-6 md:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-6" style="display: none;">
+                        <div x-show="memberType === 'guru'" class="md:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-6" style="display: none;">
                             <div>
                                 <label for="nip" class="block font-title-sm text-body-sm font-semibold text-on-surface mb-2">Nomor Induk Pegawai (NIP) <span class="text-error">*</span></label>
                                 <input
